@@ -1,5 +1,4 @@
 // Project 1: Rock, Paper, Scissors
-
 #include <cstdlib>
 #include <iostream>
 using namespace std;
@@ -10,9 +9,9 @@ enum enWinner { Player = 1, Computer = 2, Draw = 3 };
 struct stRoundInfo
 {
     short roundNumber = 0;
-    enGameChoice playerChoice;
-    enGameChoice computerChoice;
-    enWinner roundWinner;
+    enGameChoice playerChoice = enGameChoice::Rock;
+    enGameChoice computerChoice = enGameChoice::Rock;
+    enWinner roundWinner = enWinner::Draw;
 };
 
 struct stGameResult
@@ -21,7 +20,7 @@ struct stGameResult
     short playerWonTimes = 0;
     short computerWonTimes = 0;
     short DrawTimes = 0;
-    enWinner finalWinner;
+    string finalWinner = "";
 };
 
 short readRounds()
@@ -57,7 +56,6 @@ enGameChoice getComputerChoice(int from, int to)
 
     return (enGameChoice)computerChoice;
 }
-
 
 enWinner whoWonTheRound(stRoundInfo roundInfo)
 {
@@ -128,6 +126,7 @@ string choiceName(enGameChoice choice)
 
 
 }
+
 string winnerName(enWinner winner)
 {
     switch (winner)
@@ -156,20 +155,31 @@ void showGameOverScreen()
 
     cout << "\t\t\t------------------------------------\n  ";
 }
+
 void showFinalGameResults(stGameResult gameResults)
 {
-    cout << "\n------------------[Game Results]------------------\n";
-    cout << "p " << gameResults.playerWonTimes << endl;
-    cout << "c " << gameResults.computerWonTimes << endl;
-    cout << "d " << gameResults.DrawTimes << endl;
-    cout << "w " << winnerName(gameResults.finalWinner) << endl;;
-    cout << "\n--------------------------------------------------\n";
+    cout << "\n\t\t------------------[Game Results]------------------\n\n";
+    cout << "\t\tplayerWonTimes   : " << gameResults.playerWonTimes << endl;
+    cout << "\t\tcomputerWonTimes : " << gameResults.computerWonTimes << endl;
+    cout << "\t\tDrawTimes        : " << gameResults.DrawTimes << endl;
+    cout << "\t\tfinalWinner      : " << gameResults.finalWinner << endl;;
+    cout << "\n\t\t--------------------------------------------------\n";
 }
 
-void resetGame()
+bool resetScreen()
 {
-    system("color 0F");
-    system("cls");
+    char yesNo = 'a';
+    cout << "Do you want to play again? ";
+    cin >> yesNo;
+    if (yesNo == 'Y' || yesNo == 'y')
+    {
+        system("color 0F");
+        system("cls");
+        return true;
+    }
+    else
+        return false;
+
 }
 
 void startGame()
@@ -205,10 +215,27 @@ void startGame()
     }
 
     showGameOverScreen();
+    if (result.computerWonTimes > result.playerWonTimes)
+        result.finalWinner = winnerName(enWinner::Computer);
+
+    else if (result.computerWonTimes < result.playerWonTimes)
+        result.finalWinner = winnerName(enWinner::Player);
+
+    else
+        result.finalWinner = winnerName(enWinner::Draw);
+
     showFinalGameResults(result);
 
-}
+    while (resetScreen());
+    {
+        startGame();
+    }
 
+
+
+
+
+}
 
 
 int main()
